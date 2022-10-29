@@ -1,5 +1,3 @@
-1 lines (100 sloc)  4.67 KB
-
 """
 Regresión Lineal Univariada
 -----------------------------------------------------------------------------------------
@@ -15,24 +13,30 @@ def pregunta_01():
     Complete el código presentado a continuación.
     """
     # Lea el archivo `gm_2008_region.csv` y asignelo al DataFrame `df`
-    df = pd.read_csv('gm_2008_region.csv', sep=',', decimal='.', thousands=None)
+    df = pd.read_csv('gm_2008_region.csv')
 
     # Asigne la columna "life" a `y` y la columna "fertility" a `X`
-    y = df['life']
-    X = df['fertility']
+    y = df['life'].values
+    X = df['fertility'].values
 
     # Imprima las dimensiones de `y`
     print(y.shape)
+
     # Imprima las dimensiones de `X`
     print(X.shape)
+
     # Transforme `y` a un array de numpy usando reshape
-    y_reshaped = y.to_numpy().reshape(139,1)
+    y_reshaped = y.reshape(-1, 1)
+
     # Trasforme `X` a un array de numpy usando reshape
-    X_reshaped = X.to_numpy().reshape(139,1)
+    X_reshaped = X.reshape(-1, 1)
+
     # Imprima las nuevas dimensiones de `y`
-    print(np.shape(y_reshaped))
+    print(y_reshaped.shape)
+
     # Imprima las nuevas dimensiones de `X`
-    print(np.shape(X_reshaped))
+    print(X_reshaped.shape)
+
 
 def pregunta_02():
     """
@@ -41,18 +45,23 @@ def pregunta_02():
     """
 
     # Lea el archivo `gm_2008_region.csv` y asignelo al DataFrame `df`
-    df = pd.read_csv('gm_2008_region.csv', sep=',', decimal='.', thousands=None)
+    df = pd.read_csv('gm_2008_region.csv')
 
     # Imprima las dimensiones del DataFrame
     print(df.shape)
+
     # Imprima la correlación entre las columnas `life` y `fertility` con 4 decimales.
     print(round(df['life'].corr(df['fertility']),4))
+
     # Imprima la media de la columna `life` con 4 decimales.
-    print(round( df['life'].mean() ,4))
+    print(round(df['life'].mean(),4))
+
     # Imprima el tipo de dato de la columna `fertility`.
     print(type(df['fertility']))
+
     # Imprima la correlación entre las columnas `GDP` y `life` con 4 decimales.
     print(round(df['GDP'].corr(df['life']),4))
+
 
 def pregunta_03():
     """
@@ -61,21 +70,30 @@ def pregunta_03():
     """
 
     # Lea el archivo `gm_2008_region.csv` y asignelo al DataFrame `df`
-    df = pd.read_csv('gm_2008_region.csv', sep=',', decimal='.', thousands=None)
+    df = pd.read_csv('gm_2008_region.csv')
 
     # Asigne a la variable los valores de la columna `fertility`
-    X_fertility = df[['fertility']]
+    X_fertility = df['fertility'].values.reshape(-1,1)
+
     # Asigne a la variable los valores de la columna `life`
-    y_life = df[['life']]
+    y_life = df['life'].values.reshape(-1,1)
+
     # Importe LinearRegression
-    from sklearn import linear_model
+    from sklearn.linear_model import LinearRegression
+
     # Cree una instancia del modelo de regresión lineal
-    reg = linear_model.LinearRegression(fit_intercept=True, normalize=False)
+    reg = LinearRegression()
+
     # Cree El espacio de predicción. Esto es, use linspace para crear
     # un vector con valores entre el máximo y el mínimo de X_fertility
-    prediction_space = np.linspace(X_fertility.min(), X_fertility.max()).reshape(50, 1)
+    prediction_space = np.linspace(
+        X_fertility.min(),
+        X_fertility.max(),
+    ).reshape(-1, 1)
+
     # Entrene el modelo usando X_fertility y y_life
     reg.fit(X_fertility, y_life)
+
     # Compute las predicciones para el espacio de predicción
     y_pred = reg.predict(prediction_space)
 
@@ -94,24 +112,29 @@ def pregunta_04():
     # Importe mean_squared_error
     from sklearn.linear_model import LinearRegression
     from sklearn.model_selection import train_test_split
-    from sklearn.metrics import mean_squared_error, r2_score
-    
+    from sklearn.metrics import mean_squared_error
 
     # Lea el archivo `gm_2008_region.csv` y asignelo al DataFrame `df`
-    df = pd.read_csv('gm_2008_region.csv', sep=',', decimal='.', thousands=None)
+    df = pd.read_csv('gm_2008_region.csv')
+
     # Asigne a la variable los valores de la columna `fertility`
-    X_fertility = df[['fertility']]
+    X_fertility = df['fertility'].values.reshape(-1,1)
 
     # Asigne a la variable los valores de la columna `life`
-    y_life =df[['life']]
+    y_life = df['life'].values.reshape(-1,1)
+
     # Divida los datos de entrenamiento y prueba. La semilla del generador de números
     # aleatorios es 53. El tamaño de la muestra de entrenamiento es del 80%
-    (X_train, X_test, y_train, y_test,) = train_test_split( X_fertility, y_life, test_size=0.2, random_state=53)
+    (X_train, X_test, y_train, y_test,) = train_test_split(X_fertility,y_life,test_size=0.2,
+        random_state=53,
+    )
+
     # Cree una instancia del modelo de regresión lineal
-    linearRegression = LinearRegression(fit_intercept=True, normalize=False)
-    
+    linearRegression = LinearRegression()
+
     # Entrene el clasificador usando X_train y y_train
     linearRegression.fit(X_train, y_train)
+
     # Pronostique y_test usando X_test
     y_pred = linearRegression.predict(X_test)
 
